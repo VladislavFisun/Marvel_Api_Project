@@ -25,9 +25,15 @@ class RandomChar extends Component  {
         error:true
     })
      }
+     onUpdateChat=()=>{
+        this.setState({
+            loading:true
+        })
+     }
      updateChar =()=>{
         
         const id = Math.floor(Math.random()*(1011400-1011000)+1011000)
+        this.onUpdateChat()
        this.marvelService
        .getCharacter(id)
        .then(this.onCharLoaded)
@@ -56,7 +62,7 @@ render(){
                 <p className="randomchar__title">
                     Or choose another one
                 </p>
-                <button className="button button__main">
+                <button onClick={this.updateChar} className="button button__main">
                     <div className="inner">try it</div>
                 </button>
                 <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
@@ -78,10 +84,16 @@ const View =({char})=>{
     else{
       desc = 'description not found';
     }
+    let fitter='';
+    thumbnail==='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'?fitter='contain':fitter='cover'
+   let style={
+    objectFit:fitter
+   }
+
     return(
       <div>
          <div className="randomchar__block">
-                <img src={thumbnail} alt="Random character" className="randomchar__img"/>
+                <img src={thumbnail} style={style} alt="Random character" className="randomchar__img"/>
                 <div className="randomchar__info">
                     <p className="randomchar__name">{name}</p>
                     <p className="randomchar__descr">
