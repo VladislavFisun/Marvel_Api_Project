@@ -1,4 +1,5 @@
 {
+  "homepage": "https://github.com/VladislavFisun/VladislavFisun.github.io.git",
   "name": "marvel",
   "version": "0.1.0",
   "private": true,
@@ -7,15 +8,19 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "bootstrap": "^5.2.3",
+    "gh-pages": "^5.0.0",
     "node": "^19.6.0",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
+    "sass": "^1.38.0",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+  "predeploy": "npm run build",
+   "deploy": "gh-pages -d build -b main",
     "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
