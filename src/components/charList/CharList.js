@@ -49,9 +49,19 @@ class CharList extends Component {
     //       this.updateAllCharacters()
     //     }
     // }
+    refArr =[]
+
+    getRef =(elem)=>{
+        this.refArr.push(elem)
+    }
+    refItemEffect=(id)=>{
+        this.refArr.forEach(item=>item.classList.remove('char__item_selected'))
+        this.refArr[id].classList.add('char__item_selected');
+        
+    }
    
      newCharacter=(data)=>{
-       const items = data.map(item=>{
+       const items = data.map((item,i)=>{
         let stylish=''
         item.thumbnail==='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'?stylish='contain':stylish='cover'
         let style={
@@ -63,8 +73,11 @@ class CharList extends Component {
         }
            return(
             <li className="char__item"
+            ref={this.getRef}
             key={item.id}
-            onClick={()=>this.props.getIndex(item.id)}
+            onClick={()=>{this.props.getIndex(item.id)
+                      this.refItemEffect(i)}
+            }
             >
             <img src={item.thumbnail} alt="abyss" style={style}/>
             <div className="char__name">{item.name}</div>
