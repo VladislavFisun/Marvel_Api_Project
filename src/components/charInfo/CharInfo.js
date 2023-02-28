@@ -18,7 +18,7 @@ marvelService = new MarvelService()
 componentDidMount(){
     this.updateChar()
 }
-componentDidUpdate(prevProps){
+componentDidUpdate(prevProps){ 
     if(this.props.index!==prevProps.index){
         this.updateChar()
     }

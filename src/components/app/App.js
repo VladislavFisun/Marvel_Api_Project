@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState } from "react";
 import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
@@ -7,30 +7,31 @@ import ErrorBoundery from "../../errorBoundery/ErrorBoundery";
 
 import decoration from '../../resources/img/vision.png';
 
-class App extends Component{
-    state={
-     index:null
+const App  =()=>{
+
+    const[char,setChar] = useState(null);
+
+    
+    const getIndex=(id)=>{
+       setChar(id)
     }
-    getIndex=(id)=>{
-        this.setState({index:id})
-    }
- render(){
+
     return (
         <div className="app">
             <AppHeader/>
             <main>
                 <RandomChar/>
-                <div className="char__content">
-                    <CharList getIndex={this.getIndex}/>
+                {/* <div className="char__content">
+                    <CharList getIndex={getIndex}/>
                    <ErrorBoundery> 
-                    <CharInfo index={this.state.index}/>
+                    <CharInfo index={char}/>
                     </ErrorBoundery>
                 </div>
-                <img className="bg-decoration" src={decoration} alt="vision"/>
+                <img className="bg-decoration" src={decoration} alt="vision"/> */}
             </main>
         </div>
     )
- }
+ 
 }
 
 export default App;

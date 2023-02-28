@@ -1,48 +1,37 @@
-import {Component} from 'react'
+import {useState,useEffect,useRef} from 'react'
 import './randomChar.scss';
 import Spinner from '../spinner/spinner';
-import MarvelService from '../services/MarvelService';
+import useMarvelService from '../services/MarvelService';
 import mjolnir from '../../resources/img/mjolnir.png';
 import ErrorMessage from '../errorMessage.js/errorMessage';
 
-class RandomChar extends Component  {
-    constructor(props){
-        super(props);
-        this.updateChar()
-    }
-     state={
-     char: {},
-     loading:true,
-     error:false
-     } 
-     marvelService = new MarvelService();
-     onCharLoaded =(char)=>{
-        this.setState({char:char,loading:false})
+const RandomChar =(props)=> {
+  const[char,setChar] = useState({})
+  
+   
+    const  {error,loading,getCharacter} = useMarvelService();
+     const onCharLoaded =(char)=>{
+        setChar(char)
+       
+    
      }
-     onError=()=>{
-    this.setState({
-        loading:false,
-        error:true
-    })
-     }
-     onUpdateChat=()=>{
-        this.setState({
-            loading:true
-        })
-     }
-     updateChar =()=>{
+     useEffect(()=>{
+        updateChar()
+     },[])
+   
+    
+     const updateChar =()=>{
         
         const id = Math.floor(Math.random()*(1011400-1011000)+1011000)
-        this.onUpdateChat()
-       this.marvelService
-       .getCharacter(id)
-       .then(this.onCharLoaded)
-       .catch(this.onError)
+        getCharacter(id)
+       .then(onCharLoaded)
+      
        
      }
+   
     
-render(){
-    const{char,loading,error} = this.state
+
+    
   const spinner = loading?<Spinner/>:null;
   const errorMessage = error?<ErrorMessage/>:null;
   const activeBlock = !(loading||error)?<View char={char}/>:null
@@ -62,14 +51,14 @@ render(){
                 <p className="randomchar__title">
                     Or choose another one
                 </p>
-                <button onClick={this.updateChar} className="button button__main">
+                <button onClick={updateChar} className="button button__main">
                     <div className="inner">try it</div>
                 </button>
                 <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
             </div>
         </div>
     )
-}
+
 }
 
 const View =({char})=>{

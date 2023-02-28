@@ -2,65 +2,55 @@ import './charList.scss';
 import PropTypes from 'prop-types';
 import MarvelService from '../services/MarvelService';
 import abyss from '../../resources/img/abyss.jpg';
-import {Component} from 'react'
+import {useState,useEffect,useRef} from 'react'
 
-class CharList extends Component {
-    constructor(props){
-      super(props)
-      
-    }
-    state={
-        data:[],
-        newItemLoading:false,
-        offset:1541,
-        charEnded:false
-    }
-    allCharacters = new MarvelService()
+const CharList  =(props)=>{
+    const[data,setData] = useState([])
+    const [newItemLoading,setNewItemLoading] = useState(false);
+    const[,offset,setOffset] = useState(210);
+    const[charEnded,setCharEnded] = useState(false)
     
-    componentDidMount(){
-      this.updateAllCharacters()
+    const allCharacters = new MarvelService()
+    
+    useEffect(()=>{
+        updateAllCharacters()
+    },[])
+ 
+    const updateAllCharacters=(offset)=>{
+        onCharListLoading()
+        allCharacters.getAllCharacters(offset)
+        .then(uploadAllCharecters)
     }
-    updateAllCharacters=(offset)=>{
-        this.onCharListLoading()
-        this.allCharacters
-        .getAllCharacters(offset)
-        .then(this.uploadAllCharecters)
+   const onCharListLoading=()=>{
+      setNewItemLoading(true);
     }
-    onCharListLoading=()=>{
-        this.setState({
-            newItemLoading:true
-        })
-    }
-    uploadAllCharecters=(res)=>{
+    const uploadAllCharecters=(res)=>{
         let ended =false
     if(res.length<9){
        ended=true
     }
-    this.setState(({data,offset})=>({
-        data:[...data,...res],
-        offset: offset+9,
-        newItemLoading:false,
-        charEnded:ended,
-        
-      }))
+      setData(data=>[...data,...res])
+      setOffset(offset=>offset+9);
+      setNewItemLoading(false);
+      setCharEnded(ended)
+
     }
     // onScrollUpload =(e)=>{
     //     if(e.target.scrollHeight===e.target.scrollTop+e.target.clientHeight){
     //       this.updateAllCharacters()
     //     }
     // }
-    refArr =[]
+    const refArr = useRef([])
 
-    getRef =(elem)=>{
-        this.refArr.push(elem)
-    }
-    refItemEffect=(id)=>{
-        this.refArr.forEach(item=>item.classList.remove('char__item_selected'))
-        this.refArr[id].classList.add('char__item_selected');
+    console.log(refArr)
+  
+    const refItemEffect=(id)=>{
+        refArr.current.forEach(item=>item.classList.remove('char__item_selected'))
+        refArr.current[id].classList.add('char__item_selected');
         
     }
    
-     newCharacter=(data)=>{
+     const newCharacter=(data)=>{
        const items = data.map((item,i)=>{
         let stylish=''
         item.thumbnail==='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'?stylish='contain':stylish='cover'
@@ -73,10 +63,10 @@ class CharList extends Component {
         }
            return(
             <li className="char__item"
-            ref={this.getRef}
+            ref={(el)=>refArr.current[i]=el}
             key={item.id}
-            onClick={()=>{this.props.getIndex(item.id)
-                      this.refItemEffect(i)}
+            onClick={()=>{props.getIndex(item.id)
+                      refItemEffect(i)}
             }
             >
             <img src={item.thumbnail} alt="abyss" style={style}/>
@@ -91,14 +81,10 @@ class CharList extends Component {
        )
      }
     
-render(){
-    const{data,offset,newItemLoading,charEnded}=this.state
- 
- 
 
     return (
         <div  className="char__list">
-               {this.newCharacter(data)}
+               {newCharacter(data)}
             <button
             disabled={newItemLoading}
            style={{'display':charEnded?'none':'block'}}
@@ -109,7 +95,7 @@ render(){
             </button>
         </div>
     )
-}
+
 }
 CharList.propTypes={
     getIndex:PropTypes.func,
