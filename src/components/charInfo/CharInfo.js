@@ -1,66 +1,39 @@
-import MarvelService from '../services/MarvelService';
+import useMarvelService from '../services/MarvelService';
 import PropTypes from 'prop-types';
 import Spinner from '../spinner/spinner';
 import Skeleton from '../skeleton/Skeleton'
 import ErrorMessage from '../errorMessage.js/errorMessage';
-import { Component } from 'react';
+import { useState,useEffect } from 'react';
 import './charInfo.scss';
-import thor from '../../resources/img/thor.jpeg';
 
-class CharInfo extends Component {
-state={
-char: null,
-loading:false,
-error:false
-}
-marvelService = new MarvelService()
 
-componentDidMount(){
-    this.updateChar()
-}
-componentDidUpdate(prevProps){ 
-    if(this.props.index!==prevProps.index){
-        this.updateChar()
-    }
-}
-componentDidCatch(err,info){
-    console.log(err,info);
-    this.setState({
-        error:true
-    })
-}
-onError=()=>{
-    this.setState({
-        loading:false,
-        error:true
-    })
-     }
- 
- 
-     onCharLoaded =(char)=>{
-        this.setState({char:char,loading:false})
+
+const CharInfo =(props)=> {
+    const [char,setChar] = useState(null);
+
+const {loading,error,getCharacter} = useMarvelService()
+
+
+
+ useEffect(()=>{
+    updateChar()
+ },[props.index])
+
+     const onCharLoaded =(char)=>{
+        setChar(char)
      }
 
-updateChar=()=>{
-   const {index} = this.props
+const updateChar=()=>{
+   const {index} = props
    if(!index){
     return
    }
-   this.onCharLoading()
-   this.marvelService
-   .getCharacter(index)
-   .then(this.onCharLoaded)
-   .catch(this.onError)
-}
-onCharLoading=()=>{
-    this.setState({
-        loading:true
-    })
- }
+    getCharacter(index)
+   .then(onCharLoaded)
+   
+}    
+   
 
-    
-   render(){
-    const {char,loading,error} = this.state
     const errorMessage= error? <ErrorMessage/>:null 
     const loadingMessage=loading? <Spinner/>:null 
     const charInfo = !(error||loading||!char )? <Block char={char}/>:null
@@ -76,7 +49,7 @@ onCharLoading=()=>{
            
         </div>
     )
-   }
+   
 }
 const Block=({char})=>{
     const {name, description, thumbnail, homepage, wiki, comics} = char;

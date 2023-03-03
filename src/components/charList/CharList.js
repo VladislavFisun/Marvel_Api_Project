@@ -1,6 +1,6 @@
 import './charList.scss';
 import PropTypes from 'prop-types';
-import MarvelService from '../services/MarvelService';
+import useMarvelService from '../services/MarvelService';
 import abyss from '../../resources/img/abyss.jpg';
 import {useState,useEffect,useRef} from 'react'
 
@@ -10,15 +10,15 @@ const CharList  =(props)=>{
     const[,offset,setOffset] = useState(210);
     const[charEnded,setCharEnded] = useState(false)
     
-    const allCharacters = new MarvelService()
+    const {error,loading,getAllCharacters} = useMarvelService()
     
     useEffect(()=>{
         updateAllCharacters()
     },[])
  
     const updateAllCharacters=(offset)=>{
-        onCharListLoading()
-        allCharacters.getAllCharacters(offset)
+        
+        getAllCharacters(offset)
         .then(uploadAllCharecters)
     }
    const onCharListLoading=()=>{
@@ -88,7 +88,7 @@ const CharList  =(props)=>{
             <button
             disabled={newItemLoading}
            style={{'display':charEnded?'none':'block'}}
-            onClick={()=>{this.updateAllCharacters(offset)}}
+            onClick={()=>{updateAllCharacters(offset)}}
             className="button button__main button__long">
                 <div 
                 className="inner">load more</div>
