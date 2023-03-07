@@ -3,16 +3,20 @@ import useMarvelService from '../services/MarvelService';
 import { useState,useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useActionData } from 'react-router-dom';
+import Spinner from '../spinner/spinner';
+import ErrorMessage from '../errorMessage.js/errorMessage';
+
 
 
 const ComicsList = () => {
     
     const[data,setData] = useState([])
     const[offset,setOffset] = useState(210)
-    const{error,loading,getAllComics} = useMarvelService()
+    const [newItemLoading, setnewItemLoading] = useState(false)
+    const{error,loading,getAllComics,clearError} = useMarvelService()
 
     useEffect(()=>{
-        setInterval(getComicsByClick(),60000)
+        setInterval(getComicsByClick(offset,true),60000)
     },[])
     // useEffect(()=>{
     //     setInterval(window.addEventListener('scroll',()=>{
@@ -23,7 +27,9 @@ const ComicsList = () => {
     
     // },[offset])
 
-    const getComicsByClick=(offset)=>{
+    const getComicsByClick=(offset,initial)=>{
+        clearError()
+        initial?setnewItemLoading(false):setnewItemLoading(true)
         getAllComics(offset)
         .then(uploadComics)
     }
@@ -31,6 +37,7 @@ const ComicsList = () => {
     const uploadComics=(res)=>{
     setOffset(offset=>offset+8)
       setData(data=>[...data,...res])
+      setnewItemLoading(false)
     }
   
 
@@ -57,16 +64,30 @@ const ComicsList = () => {
     })
     return items
  }
+ const loaded = loading&&!newItemLoading?<Spinner/>:null
+ const errorMessage = error?<ErrorMessage/>:null
  const comicsArr = getNewComics(data)
-    return (
+ const content =<ComicsContent comicsArr={comicsArr} offset={offset} loading={loading} getComicsByClick={getComicsByClick}/>
+    
+ return (
+ <>
+ {loaded}
+ {errorMessage}
+ {content}
+ </>
+    )
+}
+
+const ComicsContent=({comicsArr,loading,getComicsByClick,offset})=>{
+    return(
         <div className="comics__list">
-            <ul className="comics__grid">
-             {comicsArr}
-            </ul>
-            <button onClick={getComicsByClick} className="button button__main button__long">
-                <div className="inner">load more</div>
-            </button>
-        </div>
+        <ul className="comics__grid">
+         {comicsArr}
+        </ul>
+        <button disabled={loading} onClick={()=>{getComicsByClick(offset)}} className="button button__main button__long">
+            <div className="inner">load more</div>
+        </button>
+    </div>
     )
 }
 

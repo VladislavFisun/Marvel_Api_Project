@@ -1,8 +1,13 @@
 import './charList.scss';
+import { CSSTransition,TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 import useMarvelService from '../services/MarvelService';
+import * as Yup from 'yup'
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import abyss from '../../resources/img/abyss.jpg';
 import {useState,useEffect,useRef} from 'react'
+import Spinner from '../spinner/spinner';
+
 
 const CharList  =(props)=>{
     const[data,setData] = useState([])
@@ -10,8 +15,12 @@ const CharList  =(props)=>{
     const[,offset,setOffset] = useState(210);
     const[charEnded,setCharEnded] = useState(false)
     
-    const {error,loading,getAllCharacters} = useMarvelService()
+    const {error,loading,getAllCharacters,getCharacterByName} = useMarvelService()
     
+    useEffect(()=>{
+        getCharacterByName()
+        .then(res=>console.log(res))
+    },[])
     useEffect(()=>{
         updateAllCharacters()
     },[])
@@ -62,28 +71,36 @@ const CharList  =(props)=>{
             item.name = item.name.slice(0,28)+'...'
         }
            return(
-            <li className="char__item"
-            ref={(el)=>refArr.current[i]=el}
-            key={item.id}
-            onClick={()=>{props.getIndex(item.id)
-                      refItemEffect(i)}
-            }
-            >
-            <img src={item.thumbnail} alt="abyss" style={style}/>
-            <div className="char__name">{item.name}</div>
-        </li>
+      <CSSTransition key={item.id} timeout={300} classNames='char'>
+                <li className="char__item"
+                ref={(el)=>refArr.current[i]=el}
+                key={item.id}
+                onClick={()=>{props.getIndex(item.id)
+                          refItemEffect(i)}
+                }
+                >
+                <img src={item.thumbnail} alt="abyss" style={style}/>
+                <div className="char__name">{item.name}</div>
+            </li>
+      </CSSTransition>
            )
        })
        return(
-        <ul className="char__grid">
-        {items}  
+   
+<ul className="char__grid">
+       <TransitionGroup component={null}>
+       {items}  
+       </TransitionGroup>
        </ul>
+    
        )
      }
     
 
     return (
+  
         <div  className="char__list">
+            {loading?<Spinner/>:null}
                {newCharacter(data)}
             <button
             disabled={newItemLoading}
@@ -93,7 +110,9 @@ const CharList  =(props)=>{
                 <div 
                 className="inner">load more</div>
             </button>
+     
         </div>
+        
     )
 
 }

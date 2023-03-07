@@ -32,6 +32,10 @@ const useMarvelService=()=>{
       const res = await request(`https://gateway.marvel.com:443/v1/public/comics/${id}?apikey=978e26dd2ad8925b8eb29d6b89e0793e`)
       return _transformComics(res.data.results[0]);
     }
+    const getCharacterByName=async (char='')=>{
+      const res = await request(`https://gateway.marvel.com:443/v1/public/characters?name=${char}&apikey=978e26dd2ad8925b8eb29d6b89e0793e`)
+     return(res.data.results)
+    }
 
     
 
@@ -77,7 +81,8 @@ const useMarvelService=()=>{
       getCharacter,
       getAllComics,
       getComics,
-      showArr
+      showArr,
+      getCharacterByName
     }
 }
 

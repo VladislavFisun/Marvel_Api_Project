@@ -2,11 +2,13 @@ import { useState } from "react";
 import { lazy,Suspense } from "react";
 import { BrowserRouter as Router,Route,Routes } from "react-router-dom";
 import AppHeader from "../appHeader/AppHeader";import CharInfo from "../charInfo/CharInfo";
-
+import SingleChar from "../pages/singleCharPage";
+import {Helmet} from 'react-helmet'
 const Page404 = lazy(()=>import('../pages/404'))
 const MainPage = lazy(()=>import('../pages/mainPage'))
 const ComicsPage = lazy(()=>import('../pages/comicsPage'))
 const SingleComicPage = lazy(()=>import('../pages/singleComicPage'))
+
 
 const App  =()=>{
 
@@ -24,9 +26,11 @@ return (
 <main>
 <Suspense fallback={<p>Loading...</p>}>
     <Routes>
-    <Route  path="/" element={<MainPage/>}/>
+    <Route  path="/Marvel_Api_Practice" element={<MainPage/>}/>
     <Route  path ="/comics" element={<ComicsPage/>}/>
     <Route path="/comics/:comicId" element={<SingleComicPage/>} />
+    <Route path="/character/:charId" element ={<SingleChar/>}/>
+
     <Route path='*' element={<Page404/>}/>
     </Routes>
 </Suspense >

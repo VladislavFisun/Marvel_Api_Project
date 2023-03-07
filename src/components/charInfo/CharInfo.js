@@ -8,6 +8,7 @@ import './charInfo.scss';
 
 
 
+
 const CharInfo =(props)=> {
     const [char,setChar] = useState(null);
 
@@ -95,6 +96,7 @@ const Block=({char})=>{
                 )
                })}
             </ul>
+         
         </>
     )
 }
